@@ -6,7 +6,7 @@
 /*   By: marcudos <marcudos@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 12:03:46 by marcudos          #+#    #+#             */
-/*   Updated: 2025/03/24 14:26:24 by marcudos         ###   ########.fr       */
+/*   Updated: 2025/03/25 16:23:45 by marcudos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@
 # include <unistd.h>
 # include <errno.h>
 # include <string.h>
+# include <stdint.h>
+
+# define TIME_TO_DIE 600
 
 typedef struct s_philosopher
 {
@@ -30,9 +33,25 @@ typedef struct s_philosopher
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	meal_lock;
 	int		meals_eaten;
-}	t_philosopher;
+}	t_philo;
+
+typedef struct	s_table
+{
+	t_philo	philos[2];
+	pthread_mutex_t	forks[2];
+	pthread_mutex_t	death_lock;
+	int		is_dead;
+}	t_table;
+
+int	someone_died(t_table *table);
 
 // utils
-long	get_current_time_ms(void);
+uint64_t	get_time(void);
+int	ft_usleep(uint64_t time);
+
+// actions
+void	eat(t_philo *philo, t_table *table);
+void	sleeping(t_philo *philo, t_table *table);
+void	think(t_philo *philo, t_table *table);
 
 #endif // !PHILOSOPHERS_H

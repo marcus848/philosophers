@@ -12,20 +12,20 @@
 
 #include "philosophers.h"
 
-long	get_current_time_ms(void)
+uint64_t	get_time(void)
 {
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
-//
-// int	ft_usleep(uint64_t time, t_philo *philo)
-// {
-// 	uint64_t	start;
-//
-// 	start = get_time(philo->data);
-// 	while ((get_time(philo->data) - start) < time)
-// 		usleep(time / 10);
-// 	return (0);
-// }
+
+int	ft_usleep(uint64_t ms)
+{
+	uint64_t	end;
+
+	end = get_time() + ms;
+	while (get_time() < end)
+		usleep(100);
+	return (0);
+}
