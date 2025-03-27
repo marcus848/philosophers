@@ -29,3 +29,27 @@ int	ft_usleep(uint64_t ms)
 		usleep(100);
 	return (0);
 }
+
+int     ft_atoi(const char *nptr)
+{
+	int     sinal;
+	int     nbr;
+
+	sinal = 1;
+	nbr = 0;
+	while ((*nptr >= 9 && *nptr <= 13) || *nptr == 32)
+		nptr++;
+	if (*nptr == '-')
+	{
+		nptr++;
+		sinal *= -1;
+	}
+	else if (*nptr == '+')
+		nptr++;
+	while (*nptr >= '0' && *nptr <= '9')
+	{
+		nbr = nbr * 10 + *nptr - '0';
+		nptr++;
+	}
+	return (nbr * sinal);
+}

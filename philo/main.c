@@ -21,13 +21,23 @@ int	someone_died(t_table *table)
 	return (dead);
 }
 
+int	someone_satisfied(t_table *table)
+{
+	int	satisfied;
+
+	pthread_mutex_lock(&table->times_lock);
+	satisfied = table->is_satisfied;
+	pthread_mutex_unlock(&table->times_lock);
+	return (satisfied);
+}
+
 void	*routine(void *arg)
 {
 	t_philo	*philo = (t_philo *)arg;
 	t_table	*table = (t_table *)(philo - (philo->id - 1));
-	int	i = 0;
+	// int	i = 0;
 
-	while (++i <= 3 && !someone_died(table))
+	while (!someone_died(table) && !someone_satisfied(table))
 	{
 		eat(philo, table);
 		sleeping(philo, table);
@@ -53,7 +63,7 @@ void	*routine_monitor(void *arg)
 			now = get_time();
 			time_since_last_meal = now - table->philos[i].last_meal_time;
 			pthread_mutex_unlock(&table->philos[i].meal_lock);
-			if (time_since_last_meal >= TIME_TO_DIE)
+			if (time_since_last_meal > 401)
 			{
 				pthread_mutex_lock(&table->death_lock);
 				if (!table->is_dead)
@@ -64,6 +74,8 @@ void	*routine_monitor(void *arg)
 				pthread_mutex_unlock(&table->death_lock);
 				return (NULL);
 			}
+			if (table->philos[i].times_eat >= table->times_eat)
+				table->is_satisfied = 1;
 			i++;
 		}
 		ft_usleep(1);
@@ -84,6 +96,8 @@ int	main(void)
 		pthread_mutex_init(&table.forks[i++], NULL);
 	pthread_mutex_init(&table.death_lock, NULL);	
 	table.is_dead = 0;
+	table.times_eat = 3;
+	table.is_satisfied = 0;
 	start = get_time();
 	i = 0;
 	while (i < 2)
@@ -91,6 +105,7 @@ int	main(void)
 		table.philos[i].id = i + 1;
 		table.philos[i].start_time = start;
 		table.philos[i].last_meal_time = start;
+		table.philos[i].times_eat = 0;
 		pthread_mutex_init(&table.philos[i].meal_lock, NULL);
 		table.philos[i].left_fork = &table.forks[i];
 		table.philos[i].right_fork = &table.forks[(i + 1) % 2];

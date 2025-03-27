@@ -18,10 +18,10 @@ void	sleeping(t_philo *philo, t_table *table)
 	uint64_t	now;
 
 	now = get_time() - philo->start_time;
-	if (!someone_died(table))
+	if (!someone_died(table) && !someone_satisfied(table))
 	{
 		printf("%ld Philosopher %d is sleeping\n", now, philo->id);
-		ft_usleep(100);
+		ft_usleep(200);
 	}
 }
 
@@ -30,7 +30,7 @@ void	think(t_philo *philo, t_table *table)
 	uint64_t	now;
 
 	now = get_time() - philo->start_time;
-	if (!someone_died(table))
+	if (!someone_died(table) && !someone_satisfied(table))
 		printf("%ld Philosopher %d is thinking\n", now, philo->id);
 }
 
@@ -52,21 +52,22 @@ void	eat(t_philo *philo, t_table *table)
 	}
 	pthread_mutex_lock(first_fork);
 	now = get_time() - philo->start_time;
-	if (!someone_died(table))
+	if (!someone_died(table) && !someone_satisfied(table))
 		printf("%ld Philosopher %d has taken a fork\n", now, philo->id);
 	pthread_mutex_lock(second_fork);
 	now = get_time() - philo->start_time;
-	if (!someone_died(table))
+	if (!someone_died(table) && !someone_satisfied(table))
 		printf("%ld Philosopher %d has taken a fork\n", now, philo->id);
-	pthread_mutex_lock(&philo->meal_lock);
-	philo->last_meal_time = get_time();
-	pthread_mutex_unlock(&philo->meal_lock);
 	now = get_time() - philo->start_time;
-	if (!someone_died(table))
+	if (!someone_died(table) && !someone_satisfied(table))
 	{
 		printf("%ld Philosopher %d is eating\n", now, philo->id);
 		ft_usleep(200);
 	}
+	philo->times_eat++;
+	pthread_mutex_lock(&philo->meal_lock);
+	philo->last_meal_time = get_time();
+	pthread_mutex_unlock(&philo->meal_lock);
 	pthread_mutex_unlock(second_fork);
 	pthread_mutex_unlock(first_fork);
 }

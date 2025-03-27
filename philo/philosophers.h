@@ -33,6 +33,7 @@ typedef struct s_philosopher
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	meal_lock;
 	int		meals_eaten;
+	int		times_eat;
 }	t_philo;
 
 typedef struct	s_table
@@ -41,13 +42,18 @@ typedef struct	s_table
 	pthread_mutex_t	forks[2];
 	pthread_mutex_t	death_lock;
 	int		is_dead;
+	int		times_eat;
+	pthread_mutex_t	times_lock;
+	int		is_satisfied;
 }	t_table;
 
 int	someone_died(t_table *table);
+int	someone_satisfied(t_table *table);
 
 // utils
 uint64_t	get_time(void);
 int	ft_usleep(uint64_t time);
+int     ft_atoi(const char *nptr);
 
 // actions
 void	eat(t_philo *philo, t_table *table);
