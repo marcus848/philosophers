@@ -6,32 +6,35 @@
 /*   By: marcudos <marcudos@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 11:07:00 by marcudos          #+#    #+#             */
-/*   Updated: 2025/03/31 15:15:14 by marcudos         ###   ########.fr       */
+/*   Updated: 2025/03/31 16:44:34 by marcudos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-#include <pthread.h>
 
-t_table	start_table(int ac, char **av)
+t_table	*start_table(int ac, char **av)
 {
-	t_table	table;
+	t_table	*table;
 
-	table.is_dead = 0;
-	table.count_satisfied = 0;
-	table.is_satisfied = 0;
-	table.death_time = ft_atoi(av[2]);
-	table.eat_time = ft_atoi(av[3]);
-	table.sleep_time = ft_atoi(av[4]);
+	table = malloc(sizeof(t_table));
+	if (!table)
+		return (NULL);
+	table->is_dead = 0;
+	table->count_satisfied = 0;
+	table->is_satisfied = 0;
+	table->death_time = ft_atoi(av[2]);
+	table->eat_time = ft_atoi(av[3]);
+	table->sleep_time = ft_atoi(av[4]);
 	if (ac == 6)
-		table.times_must_eat = ft_atoi(av[5]);
+		table->times_must_eat = ft_atoi(av[5]);
 	else
-		table.times_must_eat = -1;
-	table.n_philos = ft_atoi(av[1]);	
-	table.forks = malloc(sizeof(pthread_mutex_t) * table.n_philos);	
-	table.philos = malloc(sizeof(t_philo) * table.n_philos);
-	init_forks(&table);
-	init_philos(&table);
+		table->times_must_eat = -1;
+	table->n_philos = ft_atoi(av[1]);	
+	table->forks = malloc(sizeof(pthread_mutex_t) * table->n_philos);	
+	table->philos = malloc(sizeof(t_philo) * table->n_philos);
+	init_forks(table);
+	init_philos(table);
+	pthread_mutex_init(&table->table_lock, NULL);
 	return (table);
 }
 
@@ -56,13 +59,17 @@ void	init_forks(t_table *table)
 void	init_philos(t_table *table)
 {
 	int	i;
+	long	current_time;
 
 	i = 0;
+	current_time = get_time();
 	while (i < table->n_philos)
 	{
 		table->philos[i].id = i + 1;
 		table->philos[i].table = table;
 		table->philos[i].meals_eaten = 0;
+		table->philos[i].start_time = current_time;
+		table->philos[i].last_meal_time = current_time;
 		pthread_mutex_init(&table->philos[i].lock, NULL);
 		i++;
 	}

@@ -1,35 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcudos <marcudos@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/19 12:02:31 by marcudos          #+#    #+#             */
-/*   Updated: 2025/03/31 16:42:12 by marcudos         ###   ########.fr       */
+/*   Created: 2025/03/31 16:23:16 by marcudos          #+#    #+#             */
+/*   Updated: 2025/03/31 16:33:50 by marcudos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "philosophers.h"
 
-int	main(int ac, char **av)
+int	check_inputs(int ac, char **av)
 {
-	t_table	*table;
+	int	i;
+	int	j;
 
-	if (ac < 5 || ac > 6)
-		return (1);
-	if (!check_inputs(ac, av))
-		terminate_error("Invalid parameters", 1);
-	table = start_table(ac, av);
-	if (!table)
-		terminate_error("Malloc table", 1);
-	
-
+	i = 1;
+	while (i < ac)
+	{
+		j = 0;
+		while (av[i][j])
+		{
+			if (!(av[i][j] >= '0' && av[i][j] <= '9'))
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	return (1);
 }
 
-// void	start_philo(t_table *table)
-// {
-// 	pthread_t	monitor;
-// 	int		i;
-// 	
-// }
-
+void	terminate_error(char *msg, int code)
+{
+	printf("[Error]: %s\n", msg);
+	exit(code);
+}

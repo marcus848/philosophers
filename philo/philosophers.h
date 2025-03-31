@@ -6,7 +6,7 @@
 /*   By: marcudos <marcudos@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 12:03:46 by marcudos          #+#    #+#             */
-/*   Updated: 2025/03/31 15:14:43 by marcudos         ###   ########.fr       */
+/*   Updated: 2025/03/31 16:40:33 by marcudos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,12 @@ void	*routine(void *arg);
 void	*monitor(void *arg);
 
 // structs
-t_table	start_table(int ac, char **av);
+t_table	*start_table(int ac, char **av);
 void	init_forks(t_table *table);
 void	init_philos(t_table *table);
+
+// error
+int	check_inputs(int ac, char **av);
+void	terminate_error(char *msg, int code);
 
 #endif // !PHILOSOPHERS_H
