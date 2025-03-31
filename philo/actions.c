@@ -6,12 +6,11 @@
 /*   By: marcudos <marcudos@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:43:57 by marcudos          #+#    #+#             */
-/*   Updated: 2025/03/25 16:19:06 by marcudos         ###   ########.fr       */
+/*   Updated: 2025/03/31 15:18:59 by marcudos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-#include <bits/pthreadtypes.h>
 
 void	sleeping(t_philo *philo, t_table *table)
 {
@@ -64,10 +63,12 @@ void	eat(t_philo *philo, t_table *table)
 		printf("%ld Philosopher %d is eating\n", now, philo->id);
 		ft_usleep(200);
 	}
-	philo->times_eat++;
-	pthread_mutex_lock(&philo->meal_lock);
+	philo->meals_eaten++;
+	if (philo->meals_eaten == table->times_must_eat)
+		table->count_satisfied++;
+	pthread_mutex_lock(&philo->lock);
 	philo->last_meal_time = get_time();
-	pthread_mutex_unlock(&philo->meal_lock);
+	pthread_mutex_unlock(&philo->lock);
 	pthread_mutex_unlock(second_fork);
 	pthread_mutex_unlock(first_fork);
 }

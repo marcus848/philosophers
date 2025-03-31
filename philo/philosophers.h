@@ -6,7 +6,7 @@
 /*   By: marcudos <marcudos@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 12:03:46 by marcudos          #+#    #+#             */
-/*   Updated: 2025/03/25 16:23:45 by marcudos         ###   ########.fr       */
+/*   Updated: 2025/03/31 15:14:43 by marcudos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,27 +24,33 @@
 
 # define TIME_TO_DIE 600
 
+typedef struct s_table t_table;
+
 typedef struct s_philosopher
 {
+	t_table	*table;
 	int	id;
 	long	start_time;
 	long	last_meal_time;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
-	pthread_mutex_t	meal_lock;
+	pthread_mutex_t	lock;
 	int		meals_eaten;
-	int		times_eat;
 }	t_philo;
 
 typedef struct	s_table
 {
-	t_philo	philos[2];
-	pthread_mutex_t	forks[2];
-	pthread_mutex_t	death_lock;
+	int		n_philos;
+	t_philo		*philos;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	table_lock;
 	int		is_dead;
-	int		times_eat;
-	pthread_mutex_t	times_lock;
+	int		times_must_eat;
+	int		count_satisfied;
 	int		is_satisfied;
+	int		death_time;
+	int		eat_time;
+	int		sleep_time;
 }	t_table;
 
 int	someone_died(t_table *table);
@@ -59,5 +65,14 @@ int     ft_atoi(const char *nptr);
 void	eat(t_philo *philo, t_table *table);
 void	sleeping(t_philo *philo, t_table *table);
 void	think(t_philo *philo, t_table *table);
+
+// system
+void	*routine(void *arg);
+void	*monitor(void *arg);
+
+// structs
+t_table	start_table(int ac, char **av);
+void	init_forks(t_table *table);
+void	init_philos(t_table *table);
 
 #endif // !PHILOSOPHERS_H
