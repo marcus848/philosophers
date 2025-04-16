@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philo.h"
 
 uint64_t	get_time(void)
 {
@@ -30,10 +30,10 @@ int	ft_usleep(uint64_t ms)
 	return (0);
 }
 
-int     ft_atoi(const char *nptr)
+long     ft_atol(const char *nptr)
 {
-	int     sinal;
-	int     nbr;
+	long     sinal;
+	long     nbr;
 
 	sinal = 1;
 	nbr = 0;
@@ -52,4 +52,18 @@ int     ft_atoi(const char *nptr)
 		nptr++;
 	}
 	return (nbr * sinal);
+}
+
+int	ft_isnbr(const char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (!(str[i] >= '0' && str[i] <= '9')) 
+			return (0);
+		i++;
+	}
+	return (1);
 }

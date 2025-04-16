@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philo.h"
 
 t_table	*start_table(int ac, char **av)
 {
@@ -19,22 +19,21 @@ t_table	*start_table(int ac, char **av)
 	table = malloc(sizeof(t_table));
 	if (!table)
 		return (NULL);
-	table->is_dead = 0;
-	table->count_satisfied = 0;
-	table->is_satisfied = 0;
-	table->death_time = ft_atoi(av[2]);
-	table->eat_time = ft_atoi(av[3]);
-	table->sleep_time = ft_atoi(av[4]);
+	table->is_ended = 0;
+	table->start_time = get_time();
+	table->n_philos = ft_atol(av[1]);	
+	table->time_to_die = ft_atol(av[2]);
+	table->time_to_eat = ft_atol(av[3]);
+	table->time_to_sleep = ft_atol(av[4]);
 	if (ac == 6)
-		table->times_must_eat = ft_atoi(av[5]);
+		table->times_must_eat = ft_atol(av[5]);
 	else
 		table->times_must_eat = -1;
-	table->n_philos = ft_atoi(av[1]);	
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->n_philos);	
 	table->philos = malloc(sizeof(t_philo) * table->n_philos);
 	init_forks(table);
 	init_philos(table);
-	pthread_mutex_init(&table->table_lock, NULL);
+	safe_mutex(table, &table->table_lock, INIT);
 	return (table);
 }
 
@@ -45,13 +44,11 @@ void	init_forks(t_table *table)
 	i = 0;
 	while (i < table->n_philos)
 		pthread_mutex_init(&table->forks[i++], NULL);
-	table->philos[0].left_fork = &table->forks[0];
-	table->philos[0].right_fork = &table->forks[table->n_philos - 1];
-	i = 1;
+	i = 0;
 	while (i < table->n_philos)
 	{
 		table->philos[i].left_fork = &table->forks[i];
-		table->philos[i].right_fork = &table->forks[i - 1];
+		table->philos[i].right_fork = &table->forks[(i + 1) % table->n_philos];
 		i++;
 	}
 }
@@ -68,9 +65,8 @@ void	init_philos(t_table *table)
 		table->philos[i].id = i + 1;
 		table->philos[i].table = table;
 		table->philos[i].meals_eaten = 0;
-		table->philos[i].start_time = current_time;
 		table->philos[i].last_meal_time = current_time;
-		pthread_mutex_init(&table->philos[i].lock, NULL);
+		safe_mutex(table, &table->philos[i].meal_lock, INIT);
 		i++;
 	}
 }

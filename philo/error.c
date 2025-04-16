@@ -6,34 +6,29 @@
 /*   By: marcudos <marcudos@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 16:23:16 by marcudos          #+#    #+#             */
-/*   Updated: 2025/03/31 16:33:50 by marcudos         ###   ########.fr       */
+/*   Updated: 2025/04/16 16:50:31 by marcudos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philo.h"
 
 int	check_inputs(int ac, char **av)
 {
 	int	i;
-	int	j;
 
 	i = 1;
 	while (i < ac)
 	{
-		j = 0;
-		while (av[i][j])
-		{
-			if (!(av[i][j] >= '0' && av[i][j] <= '9'))
-				return (0);
-			j++;
-		}
+		if (!ft_isnbr(av[i]))
+			return (0);
 		i++;
 	}
 	return (1);
 }
 
-void	terminate_error(char *msg, int code)
+void	error_exit(t_table *table, char *error)
 {
-	printf("[Error]: %s\n", msg);
-	exit(code);
+	safe_mutex(table, &table->write_lock, LOCK);
+	printf("%s", error);
+	safe_mutex(table, &table->write_lock, UNLOCK);
 }
