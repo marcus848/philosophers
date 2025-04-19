@@ -6,7 +6,7 @@
 /*   By: marcudos <marcudos@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 12:03:46 by marcudos          #+#    #+#             */
-/*   Updated: 2025/04/16 16:50:41 by marcudos         ###   ########.fr       */
+/*   Updated: 2025/04/18 20:28:19 by marcudos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,12 @@ int	someone_died(t_table *table);
 int	someone_satisfied(t_table *table);
 
 // utils
-uint64_t	get_time(void);
+unsigned long	get_time(void);
 int	ft_usleep(uint64_t time);
 long     ft_atol(const char *nptr);
 int	ft_isnbr(const char *str);
+int	ft_strcmp(const char *s1, const char *s2);
+void	print_message(t_philo *philo, char *msg);
 
 // actions
 void	eat(t_philo *philo, t_table *table);

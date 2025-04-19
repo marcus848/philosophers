@@ -6,7 +6,7 @@
 /*   By: marcudos <marcudos@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 10:58:43 by marcudos          #+#    #+#             */
-/*   Updated: 2025/03/31 15:16:42 by marcudos         ###   ########.fr       */
+/*   Updated: 2025/04/18 21:33:48 by marcudos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,6 @@ void	*routine(void *arg)
 	t_philo	*philo = (t_philo *)arg;
 	t_table	*table = (t_table *)(philo - (philo->id - 1));
 
-	while (!someone_died(table) && !someone_satisfied(table))
-	{
-		eat(philo, table);
-		sleeping(philo, table);
-		think(philo, table);
-
-	}
 	return (NULL);
 }
 
